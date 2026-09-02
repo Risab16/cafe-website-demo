@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,8 +35,18 @@
   a { color: inherit; text-decoration: none; }
   button { font-family: inherit; cursor: pointer; border: none; background: none; }
   img { max-width: 100%; display: block; }
+  :focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 3px; }
 
   .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
 
   /* ===== NAVBAR ===== */
   nav {
@@ -65,6 +74,8 @@
     color: var(--espresso);
     letter-spacing: 1px;
   }
+  nav:not(.scrolled) .logo,
+  nav:not(.scrolled) .nav-links a { color: var(--cream); }
   .logo span { color: var(--gold); font-style: italic; font-weight: 400; }
   .nav-links {
     display: flex; gap: 2.5rem; align-items: center;
@@ -83,6 +94,7 @@
     transition: var(--transition);
   }
   .nav-links a:hover::after { width: 100%; }
+  .nav-right { display: flex; align-items: center; gap: 1.2rem; }
   .cart-icon {
     position: relative;
     width: 44px; height: 44px;
@@ -106,10 +118,11 @@
     display: none;
     flex-direction: column; gap: 5px;
     cursor: pointer;
+    padding: 0.4rem;
   }
   .hamburger span {
     width: 26px; height: 2px;
-    background: var(--espresso);
+    background: currentColor;
     transition: var(--transition);
   }
   .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
@@ -167,12 +180,26 @@
   .btn-outline:hover { background: var(--cream); color: var(--espresso); }
   .btn-dark { background: var(--espresso); color: var(--cream); }
   .btn-dark:hover { background: var(--gold); }
+  .scroll-cue {
+    position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
+    color: var(--cream); opacity: 0.75; font-size: 0.8rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    letter-spacing: 2px;
+  }
+  .scroll-cue::after {
+    content: ''; width: 1px; height: 34px; background: var(--cream);
+    animation: scrollPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(0.4); opacity: 0.4; transform-origin: top; }
+    50% { transform: scaleY(1); opacity: 1; transform-origin: top; }
+  }
 
   /* ===== SECTIONS ===== */
   section { padding: 6rem 0; }
   .section-header { text-align: center; margin-bottom: 4rem; }
   .section-eyebrow {
-    color: var(--gold);
+    color: var(--gold-dark);
     letter-spacing: 3px;
     font-size: 0.85rem;
     margin-bottom: 1rem;
@@ -221,9 +248,10 @@
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: var(--transition);
-    animation: fadeInUp 0.6s ease-out;
+    animation: fadeInUp 0.6s ease-out backwards;
   }
   .menu-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+  .menu-card.hidden { display: none; }
   .menu-img {
     height: 220px;
     background-size: cover;
@@ -301,6 +329,7 @@
   .special-img { height: 200px; background-size: cover; background-position: center; }
   .special-body { padding: 1.5rem; }
   .special-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .special-desc { color: rgba(250,247,242,0.65); font-size: 0.9rem; }
   .special-price { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-top: 0.8rem; }
 
   /* ===== TESTIMONIALS ===== */
@@ -319,7 +348,7 @@
     transition: var(--transition);
   }
   .test-card:hover { transform: translateY(-4px); }
-  .test-stars { color: var(--gold); margin-bottom: 1rem; font-size: 1.1rem; }
+  .test-stars { color: var(--gold); margin-bottom: 1rem; font-size: 1.1rem; letter-spacing: 2px; }
   .test-text {
     font-style: italic;
     color: var(--espresso-light);
@@ -345,8 +374,12 @@
     gap: 4rem;
     align-items: center;
   }
+  .res-info .section-eyebrow { text-align: left; }
   .res-info h3 { font-size: 2rem; margin-bottom: 1rem; font-style: italic; }
   .res-info p { color: var(--espresso-light); margin-bottom: 1.5rem; }
+  .res-facts { list-style: none; display: grid; gap: 0.9rem; }
+  .res-facts li { display: flex; gap: 0.8rem; color: var(--espresso-light); font-size: 0.95rem; }
+  .res-facts strong { color: var(--espresso); min-width: 100px; }
   .res-form {
     background: var(--white);
     padding: 2.5rem;
@@ -378,6 +411,9 @@
     border-color: var(--gold);
     background: var(--white);
   }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .res-form .btn-dark { width: 100%; text-align: center; margin-top: 0.5rem; }
+  .form-note { font-size: 0.85rem; color: var(--espresso-light); margin-top: 1rem; text-align: center; }
 
   /* ===== LOYALTY ===== */
   .loyalty {
@@ -406,9 +442,11 @@
   }
   .loyalty-step h4 { margin-bottom: 0.5rem; }
   .loyalty-step p { color: rgba(250,247,242,0.7); font-size: 0.9rem; }
+  .loyalty .btn-primary { margin-top: 3rem; }
 
   /* ===== NEWSLETTER ===== */
   .newsletter { background: var(--cream-dark); text-align: center; }
+  .newsletter p { color: var(--espresso-light); max-width: 500px; margin: 0 auto; }
   .newsletter-form {
     max-width: 500px;
     margin: 2rem auto 0;
@@ -424,3 +462,444 @@
     font-family: inherit;
     transition: var(--transition);
   }
+  .newsletter-form input:focus { outline: none; border-color: var(--gold); }
+  .newsletter-form button {
+    padding: 0.95rem 2rem;
+    border-radius: 50px;
+    background: var(--espresso);
+    color: var(--cream);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: var(--transition);
+  }
+  .newsletter-form button:hover { background: var(--gold); color: var(--espresso); }
+  .newsletter-success { color: var(--green); font-size: 0.9rem; margin-top: 1rem; min-height: 1.2rem; }
+
+  /* ===== FOOTER ===== */
+  footer { background: var(--espresso); color: rgba(250,247,242,0.7); padding: 4rem 0 2rem; }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--cream); margin-bottom: 1rem; }
+  .footer-logo span { color: var(--gold); font-style: italic; font-weight: 400; }
+  .footer-col h5 { color: var(--cream); font-size: 0.95rem; margin-bottom: 1.1rem; font-family: 'Inter', sans-serif; font-weight: 600; }
+  .footer-col ul { list-style: none; display: grid; gap: 0.7rem; }
+  .footer-col a { font-size: 0.9rem; transition: var(--transition); }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-col p { font-size: 0.9rem; margin-bottom: 0.6rem; }
+  .footer-social { display: flex; gap: 0.8rem; margin-top: 1.2rem; }
+  .footer-social a {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid rgba(250,247,242,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    transition: var(--transition);
+  }
+  .footer-social a:hover { background: var(--gold); color: var(--espresso); border-color: var(--gold); }
+  .footer-bottom {
+    border-top: 1px solid rgba(250,247,242,0.1);
+    padding-top: 1.8rem;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* ===== MOBILE MENU DRAWER ===== */
+  .mobile-menu {
+    position: fixed; top: 0; right: -100%; width: min(320px, 85vw); height: 100vh;
+    background: var(--cream); z-index: 200; padding: 6rem 2rem 2rem;
+    transition: right 0.4s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: var(--shadow-lg);
+  }
+  .mobile-menu.active { right: 0; }
+  .mobile-menu ul { list-style: none; display: grid; gap: 1.6rem; }
+  .mobile-menu a { font-size: 1.1rem; font-weight: 500; }
+  .mobile-overlay {
+    position: fixed; inset: 0; background: rgba(59,47,47,0.4);
+    z-index: 150; opacity: 0; pointer-events: none; transition: var(--transition);
+  }
+  .mobile-overlay.active { opacity: 1; pointer-events: auto; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .res-wrapper { grid-template-columns: 1fr; gap: 2.5rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 600px) {
+    .container { padding: 0 1.3rem; }
+    section { padding: 4rem 0; }
+    .form-row { grid-template-columns: 1fr; }
+    .newsletter-form { flex-direction: column; }
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+    .hero-btns { flex-direction: column; width: 100%; }
+    .hero-btns .btn { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#menu" class="mobile-link">Menu</a></li>
+    <li><a href="#specials" class="mobile-link">Specials</a></li>
+    <li><a href="#story" class="mobile-link">Our Story</a></li>
+    <li><a href="#reserve" class="mobile-link">Reserve a Table</a></li>
+    <li><a href="#loyalty" class="mobile-link">Loyalty</a></li>
+  </ul>
+</div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">Velvet <span>Brew</span></a>
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#specials">Specials</a></li>
+      <li><a href="#story">Our Story</a></li>
+      <li><a href="#reserve">Reserve</a></li>
+      <li><a href="#loyalty">Loyalty</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="cart-icon" id="cartIcon" role="button" aria-label="View cart" tabindex="0">
+        ☕
+        <span class="cart-badge" id="cartBadge">0</span>
+      </div>
+      <div class="hamburger" id="hamburger" role="button" aria-label="Open menu" tabindex="0">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Small-batch roastery &amp; café</p>
+    <h1>Where every sip tells a story</h1>
+    <p>Beans roasted in-house every Tuesday, pastries baked at dawn, and a corner table that's been waiting for you since 1998.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn btn-primary">Explore the menu</a>
+      <a href="#reserve" class="btn btn-outline">Reserve a table</a>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL</div>
+</header>
+
+<section class="menu" id="menu">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">The menu</p>
+      <h2 class="section-title">Crafted, cup by cup</h2>
+      <p class="section-desc">Every drink starts with beans we roast ourselves, twelve miles from this counter.</p>
+    </div>
+
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="coffee">Coffee</button>
+      <button class="filter-tab" data-filter="tea">Tea</button>
+      <button class="filter-tab" data-filter="pastry">Pastries</button>
+      <button class="filter-tab" data-filter="vegan">Vegan</button>
+    </div>
+
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</section>
+
+<section class="specials" id="specials">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">This week only</p>
+      <h2 class="section-title">Seasonal pours</h2>
+      <p class="section-desc">Small runs, rotated weekly, gone once they're gone.</p>
+    </div>
+    <div class="specials-scroll" id="specialsScroll"></div>
+  </div>
+</section>
+
+<section class="testimonials" id="story">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">Our story</p>
+      <h2 class="section-title">Loved by regulars</h2>
+      <p class="section-desc">Three generations of one family, one roaster, and a neighborhood that keeps coming back.</p>
+    </div>
+    <div class="test-grid" id="testGrid"></div>
+  </div>
+</section>
+
+<section class="reservation" id="reserve">
+  <div class="container res-wrapper">
+    <div class="res-info">
+      <p class="section-eyebrow">Reserve a table</p>
+      <h3>Save your favorite corner</h3>
+      <p>Whether it's a quiet morning with a book or a birthday round for eight, we'll have the table ready and the first pour waiting.</p>
+      <ul class="res-facts">
+        <li><strong>Hours</strong> Mon–Fri 7am–7pm, Sat–Sun 8am–8pm</li>
+        <li><strong>Address</strong> 214 Maple Street, Riverside District</li>
+        <li><strong>Phone</strong> (555) 018-2274</li>
+        <li><strong>Groups</strong> Parties of 8+, call ahead please</li>
+      </ul>
+    </div>
+    <form class="res-form" id="reserveForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="resName">Name</label>
+          <input type="text" id="resName" required>
+        </div>
+        <div class="form-group">
+          <label for="resPhone">Phone</label>
+          <input type="tel" id="resPhone" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="resDate">Date</label>
+          <input type="date" id="resDate" required>
+        </div>
+        <div class="form-group">
+          <label for="resTime">Time</label>
+          <input type="time" id="resTime" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="resGuests">Guests</label>
+        <select id="resGuests">
+          <option>1 guest</option>
+          <option selected>2 guests</option>
+          <option>3 guests</option>
+          <option>4 guests</option>
+          <option>5+ guests</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="resNote">Notes (optional)</label>
+        <textarea id="resNote" placeholder="Window seat, allergy notes, celebration..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-dark">Confirm reservation</button>
+      <p class="form-note" id="resNote2">We'll text a confirmation within the hour.</p>
+    </form>
+  </div>
+</section>
+
+<section class="loyalty" id="loyalty">
+  <div class="container">
+    <p class="section-eyebrow">Velvet Rewards</p>
+    <h2 class="section-title">Every cup counts toward the next one</h2>
+    <p>Free to join, no card to carry — just your phone number at checkout.</p>
+    <div class="loyalty-steps">
+      <div class="loyalty-step">
+        <div class="loyalty-num">1</div>
+        <h4>Sign up at the counter</h4>
+        <p>Give us your number once, and we'll start your tab of stamps.</p>
+      </div>
+      <div class="loyalty-step">
+        <div class="loyalty-num">2</div>
+        <h4>Order like you always do</h4>
+        <p>Every drink and pastry earns a stamp automatically.</p>
+      </div>
+      <div class="loyalty-step">
+        <div class="loyalty-num">3</div>
+        <h4>Redeem your ninth cup</h4>
+        <p>Your ninth drink each cycle is on us, no strings attached.</p>
+      </div>
+    </div>
+    <a href="#" class="btn btn-primary">Join Velvet Rewards</a>
+  </div>
+</section>
+
+<section class="newsletter">
+  <div class="container">
+    <p class="section-eyebrow">Stay in the loop</p>
+    <h2 class="section-title">New roasts, first</h2>
+    <p>One short email a month — new seasonal drinks, roast drops, and nothing else.</p>
+    <form class="newsletter-form" id="newsletterForm">
+      <input type="email" id="newsletterEmail" placeholder="you@email.com" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="newsletter-success" id="newsletterSuccess"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-logo">Velvet <span>Brew</span></div>
+        <p>Small-batch roastery and café on Maple Street, pouring since 1998.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="Facebook">FB</a>
+          <a href="#" aria-label="X">X</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <ul>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#specials">Specials</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#loyalty">Loyalty</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Visit</h5>
+        <ul>
+          <li><a href="#reserve">Reserve a table</a></li>
+          <li><a href="#">Catering</a></li>
+          <li><a href="#">Gift cards</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Find us</h5>
+        <p>214 Maple Street<br>Riverside District</p>
+        <p>(555) 018-2274</p>
+        <p>hello@velvetbrew.example</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Velvet Brew. All rights reserved.</span>
+      <span>Roasted with care, twelve miles from this counter.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- Data ----
+  const menuItems = [
+    { name: "Velvet Latte", desc: "House espresso, steamed oat milk, a whisper of vanilla bean.", price: "$5.50", cat: "coffee", tag: "Best seller", img: "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600&q=80" },
+    { name: "Pour-Over Reserve", desc: "Single-origin Ethiopian, brewed to order, bright and floral.", price: "$6.00", cat: "coffee", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80" },
+    { name: "Cardamom Cold Brew", desc: "18-hour steep, cracked cardamom, over ice.", price: "$5.75", cat: "coffee", tag: "Vegan", img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=600&q=80" },
+    { name: "Jasmine Silver Needle", desc: "Whole-leaf jasmine tea, steeped table-side in a glass pot.", price: "$5.25", cat: "tea", img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80" },
+    { name: "Turmeric Chai", desc: "Housemade chai concentrate, black pepper, oat milk.", price: "$5.50", cat: "tea", tag: "Vegan", img: "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=600&q=80" },
+    { name: "Almond Croissant", desc: "Laminated dough, almond cream, toasted flakes.", price: "$4.75", cat: "pastry", img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&q=80" },
+    { name: "Fig & Rosemary Scone", desc: "Baked at dawn, brushed with rosemary honey.", price: "$4.25", cat: "pastry", img: "https://images.unsplash.com/photo-1587248720327-8eb72564be1e?w=600&q=80" },
+    { name: "Vegan Banana Bread", desc: "Walnuts, dark chocolate, no dairy or eggs.", price: "$4.50", cat: "pastry vegan", tag: "Vegan", img: "https://images.unsplash.com/photo-1605286658387-3c9c0e1a1e1b?w=600&q=80" },
+    { name: "Gingerbread Oat Latte", desc: "Seasonal syrup, oat milk, cinnamon dust.", price: "$5.75", cat: "coffee vegan", tag: "Vegan", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&q=80" }
+  ];
+
+  const specials = [
+    { name: "Honey Lavender Cortado", desc: "Wildflower honey, dried lavender, double espresso.", price: "$6.25", img: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600&q=80" },
+    { name: "Roasted Chestnut Mocha", desc: "House chocolate, chestnut purée, whipped cream.", price: "$6.50", img: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=600&q=80" },
+    { name: "Pear & Thyme Galette", desc: "Free-form pastry, roasted pear, fresh thyme.", price: "$5.75", img: "https://images.unsplash.com/photo-1621236378699-8597faf6a176?w=600&q=80" }
+  ];
+
+  const testimonials = [
+    { text: "The pour-over here changed how I think about coffee. I've been coming every Saturday for three years.", author: "Maya R.", role: "Regular since 2023" },
+    { text: "Best corner table in the neighborhood. Quiet enough to work, warm enough to linger.", author: "Devon L.", role: "Local writer" },
+    { text: "The staff remembered my order by my second visit. That's rare, and it matters.", author: "Priya S.", role: "Weekly regular" }
+  ];
+
+  // ---- Render menu ----
+  const menuGrid = document.getElementById('menuGrid');
+  function renderMenu() {
+    menuGrid.innerHTML = menuItems.map((item, i) => `
+      <div class="menu-card" data-cat="${item.cat}" style="animation-delay:${i * 0.05}s">
+        <div class="menu-img" style="background-image:url('${item.img}')">
+          ${item.tag ? `<span class="menu-tag${item.tag === 'Vegan' ? ' vegan' : ''}">${item.tag}</span>` : ''}
+        </div>
+        <div class="menu-body">
+          <h3 class="menu-name">${item.name}</h3>
+          <p class="menu-desc">${item.desc}</p>
+          <div class="menu-footer">
+            <span class="menu-price">${item.price}</span>
+            <button class="add-btn" aria-label="Add ${item.name} to cart" data-name="${item.name}">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  renderMenu();
+
+  // Filter tabs
+  const filterTabs = document.getElementById('filterTabs');
+  filterTabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-tab');
+    if (!btn) return;
+    filterTabs.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.menu-card').forEach(card => {
+      const cats = card.dataset.cat.split(' ');
+      card.classList.toggle('hidden', filter !== 'all' && !cats.includes(filter));
+    });
+  });
+
+  // ---- Render specials ----
+  document.getElementById('specialsScroll').innerHTML = specials.map(s => `
+    <div class="special-card">
+      <div class="special-img" style="background-image:url('${s.img}')"></div>
+      <div class="special-body">
+        <h3 class="special-name">${s.name}</h3>
+        <p class="special-desc">${s.desc}</p>
+        <p class="special-price">${s.price}</p>
+      </div>
+    </div>
+  `).join('');
+
+  // ---- Render testimonials ----
+  document.getElementById('testGrid').innerHTML = testimonials.map(t => `
+    <div class="test-card">
+      <span class="quote-mark">"</span>
+      <p class="test-stars">★★★★★</p>
+      <p class="test-text">${t.text}</p>
+      <p class="test-author">${t.author}</p>
+      <p class="test-role">${t.role}</p>
+    </div>
+  `).join('');
+
+  // ---- Cart ----
+  let cartCount = 0;
+  const cartBadge = document.getElementById('cartBadge');
+  menuGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.add-btn');
+    if (!btn) return;
+    cartCount++;
+    cartBadge.textContent = cartCount;
+  });
+
+  // ---- Navbar scroll state ----
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ---- Mobile menu ----
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  function toggleMobileMenu() {
+    hamburger.classList.toggle('active');
+    mobileMenu.classList.toggle('active');
+    mobileOverlay.classList.toggle('active');
+  }
+  hamburger.addEventListener('click', toggleMobileMenu);
+  mobileOverlay.addEventListener('click', toggleMobileMenu);
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', toggleMobileMenu);
+  });
+
+  // ---- Reservation form ----
+  const reserveForm = document.getElementById('reserveForm');
+  reserveForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('resNote2').textContent = "Thanks — your table is on hold. We'll text a confirmation shortly.";
+    reserveForm.reset();
+  });
+
+  // ---- Newsletter form ----
+  const newsletterForm = document.getElementById('newsletterForm');
+  newsletterForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('newsletterSuccess').textContent = "You're on the list — welcome to Velvet Brew.";
+    newsletterForm.reset();
+  });
+</script>
+
+</body>
+</html>
